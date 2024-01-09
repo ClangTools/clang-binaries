@@ -1,8 +1,8 @@
 name: release-opencv
-on:
-  push:
-    tags:
-      - 'opencv-*'
+on: [ push, pull_request ]
+  #push:
+#  tags:
+#    - 'opencv-*'
 
 env:
   OPENCV_VERSION: "4.9.0"
@@ -48,34 +48,46 @@ jobs:
 
       - name: build and package opencv mingw-i686-gcc
         run: |
+          echo `pwd`
           sh opencv/cmake-build-mingw-i686-gcc.sh
           cd opencv/build-mingw-i686-gcc/install/
           zip -9 -r mingw-i686.gcc.${{ env.OPENCV_VERSION }}.zip bin include lib LICENSE setup_vars_opencv4.cmd share
+          cd ../../../
+          echo `pwd`
 
       - name: build and package opencv mingw-x86_64-gcc
         run: |
+          echo `pwd`
           sh opencv/cmake-build-mingw-x86_64-gcc.sh
           cd opencv/build-mingw-x86_64-gcc/install/
           zip -9 -r mingw-x86_64.gcc.${{ env.OPENCV_VERSION }}.zip bin include lib LICENSE setup_vars_opencv4.cmd share
+          cd ../../../
+          echo `pwd`
 
       - name: build and package opencv mingw-i686-clang
         run: |
+          echo `pwd`
           sh opencv/cmake-build-mingw-i686-clang.sh
           cd opencv/build-mingw-i686-clang/install/
           zip -9 -r mingw-i686.clang.${{ env.OPENCV_VERSION }}.zip bin include lib LICENSE setup_vars_opencv4.cmd share
+          cd ../../../
+          echo `pwd`
 
       - name: build and package opencv ubuntu-x86_64
         run: |
+          echo `pwd`
           sh opencv/cmake-build-ubuntu-x86_64.sh
           cd opencv/build-ubuntu-x86_64/install/
           tar -zcf ubuntu-x86_64.${{ env.OPENCV_VERSION }}.tar.gz bin include lib share
+          cd ../../../
+          echo `pwd`
 
-      - name: create-release
-        uses: softprops/action-gh-release@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ needs.setup.outputs.VERSION }}
-          name: Release ${{ needs.setup.outputs.VERSION }}
-          files: |
-            opencv/build-mingw-i686/install/mingw-i686.clang.${{ env.OPENCV_VERSION }}.zip
-            opencv/build-ubuntu-x86_64/install/ubuntu-x86_64.${{ env.OPENCV_VERSION }}.tar.gz
+      #- name: create-release
+      #  uses: softprops/action-gh-release@v1
+      #  with:
+      #    token: ${{ secrets.GITHUB_TOKEN }}
+      #    tag_name: ${{ needs.setup.outputs.VERSION }}
+      #    name: Release ${{ needs.setup.outputs.VERSION }}
+      #    files: |
+      #      opencv/build-mingw-i686/install/mingw-i686.clang.${{ env.OPENCV_VERSION }}.zip
+      #      opencv/build-ubuntu-x86_64/install/ubuntu-x86_64.${{ env.OPENCV_VERSION }}.tar.gz
