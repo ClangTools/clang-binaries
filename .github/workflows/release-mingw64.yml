@@ -25,7 +25,7 @@ jobs:
           sh mingw64/build-i686.sh
       - name: package mingw-i686
         run: |
-          cd mingw64/mingw-w64-build/mingw-ubuntu-i686/i686/
+          cd mingw64/mingw-ubuntu-i686/i686/
           tar -zcvf ${{ needs.setup.outputs.VERSION }}.i686.tar.gz bin i686-w64-mingw32 include lib libexec share
 
       - name: build mingw-x86_64
@@ -33,7 +33,7 @@ jobs:
           sh mingw64/build-x86_64.sh
       - name: package mingw-x86_64
         run: |
-          cd mingw64/mingw-w64-build/mingw-ubuntu-x86_64/x86_64/
+          cd mingw64/mingw-ubuntu-x86_64/x86_64/
           tar -zcvf ${{ needs.setup.outputs.VERSION }}.x86_64.tar.gz bin x86_64-w64-mingw32 include lib libexec share
 
       - name: create-release
@@ -43,5 +43,5 @@ jobs:
           tag_name: ${{ needs.setup.outputs.VERSION }}
           name: Release ${{ needs.setup.outputs.VERSION }}
           files: |
-            mingw64/mingw-w64-build/mingw-ubuntu-i686/i686/${{ needs.setup.outputs.VERSION }}.i686.tar.gz
-            mingw64/mingw-w64-build/mingw-ubuntu-x86_64/x86_64/${{ needs.setup.outputs.VERSION }}.x86_64.tar.gz
+            mingw64/mingw-ubuntu-i686/i686/${{ needs.setup.outputs.VERSION }}.i686.tar.gz
+            mingw64/mingw-ubuntu-x86_64/x86_64/${{ needs.setup.outputs.VERSION }}.x86_64.tar.gz
