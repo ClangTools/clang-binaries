@@ -7,6 +7,9 @@ on:
 permissions:
   contents: write
 
+env:
+  MINGW_VERSION: "20240109"
+
 jobs:
   setup:
     runs-on: ubuntu-20.04
@@ -26,7 +29,7 @@ jobs:
       - name: package mingw-i686
         run: |
           cd mingw64/mingw-ubuntu-i686/i686/
-          tar -zcvf ${{ needs.setup.outputs.VERSION }}.i686.tar.gz bin i686-w64-mingw32 include lib libexec share
+          tar -zcf ${{ env.MINGW_VERSION }}.i686.tar.gz bin i686-w64-mingw32 include lib libexec share
 
       - name: build mingw-x86_64
         run: |
@@ -34,7 +37,7 @@ jobs:
       - name: package mingw-x86_64
         run: |
           cd mingw64/mingw-ubuntu-x86_64/x86_64/
-          tar -zcvf ${{ needs.setup.outputs.VERSION }}.x86_64.tar.gz bin x86_64-w64-mingw32 include lib libexec share
+          tar -zcf ${{ env.MINGW_VERSION }}.x86_64.tar.gz bin x86_64-w64-mingw32 include lib libexec share
 
       - name: create-release
         uses: softprops/action-gh-release@v1
@@ -43,5 +46,5 @@ jobs:
           tag_name: ${{ needs.setup.outputs.VERSION }}
           name: Release ${{ needs.setup.outputs.VERSION }}
           files: |
-            mingw64/mingw-ubuntu-i686/i686/${{ needs.setup.outputs.VERSION }}.i686.tar.gz
-            mingw64/mingw-ubuntu-x86_64/x86_64/${{ needs.setup.outputs.VERSION }}.x86_64.tar.gz
+            mingw64/mingw-ubuntu-i686/i686/${{ env.MINGW_VERSION }}.i686.tar.gz
+            mingw64/mingw-ubuntu-x86_64/x86_64/${{ env.MINGW_VERSION }}.x86_64.tar.gz
