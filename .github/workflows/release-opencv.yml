@@ -89,5 +89,7 @@ jobs:
           tag_name: ${{ needs.setup.outputs.VERSION }}
           name: Release ${{ needs.setup.outputs.VERSION }}
           files: |
-            opencv/build-mingw-i686/install/mingw-i686.clang.${{ env.OPENCV_VERSION }}.zip
+            opencv/build-mingw-i686-gcc/install/mingw-i686.gcc.${{ env.OPENCV_VERSION }}.zip
+            opencv/build-mingw-x86_64-gcc/install/mingw-x86_64.gcc.${{ env.OPENCV_VERSION }}.zip
+            opencv/build-mingw-i686-clang/install/mingw-i686.clang.${{ env.OPENCV_VERSION }}.zip
             opencv/build-ubuntu-x86_64/install/ubuntu-x86_64.${{ env.OPENCV_VERSION }}.tar.gz
