@@ -1,8 +1,8 @@
 name: release-opencv
-on: [ push, pull_request ]
-  #push:
-#  tags:
-#    - 'opencv-*'
+on: #[ push, pull_request ]
+  push:
+    tags:
+      - 'opencv-*'
 
 env:
   OPENCV_VERSION: "4.9.0"
@@ -82,12 +82,12 @@ jobs:
           cd ../../../
           echo `pwd`
 
-      #- name: create-release
-      #  uses: softprops/action-gh-release@v1
-      #  with:
-      #    token: ${{ secrets.GITHUB_TOKEN }}
-      #    tag_name: ${{ needs.setup.outputs.VERSION }}
-      #    name: Release ${{ needs.setup.outputs.VERSION }}
-      #    files: |
-      #      opencv/build-mingw-i686/install/mingw-i686.clang.${{ env.OPENCV_VERSION }}.zip
-      #      opencv/build-ubuntu-x86_64/install/ubuntu-x86_64.${{ env.OPENCV_VERSION }}.tar.gz
+      - name: create-release
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ needs.setup.outputs.VERSION }}
+          name: Release ${{ needs.setup.outputs.VERSION }}
+          files: |
+            opencv/build-mingw-i686/install/mingw-i686.clang.${{ env.OPENCV_VERSION }}.zip
+            opencv/build-ubuntu-x86_64/install/ubuntu-x86_64.${{ env.OPENCV_VERSION }}.tar.gz
