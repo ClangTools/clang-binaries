@@ -1,8 +1,8 @@
 name: release-opencv
-on:
-  push:
-    tags:
-      - 'opencv-*'
+on: [ push, pull_request ]
+  #push:
+  #  tags:
+#    - 'opencv-*'
 
 env:
   OPENCV_VERSION: "4.9.0"
@@ -10,6 +10,8 @@ env:
   LLVM_UBUNTU_VERSION: "18.04"
   MINGW_CLANG_VERSION: "20231128"
   MINGW_UBUNTU_VERSION: "20.04"
+  MINGW_GCC_TIME_VERSION: "20240109"
+  MINGW_GCC_VERSION: "gcc12"
 
 permissions:
   contents: write
@@ -33,6 +35,8 @@ jobs:
           path: |
             toolchains/clang+llvm-${{ env.LLVM_CLANG_VERSION }}-x86_64-linux-gnu-ubuntu-${{ env.LLVM_UBUNTU_VERSION }}.tar.xz
             toolchains/llvm-mingw-${{ env.MINGW_CLANG_VERSION }}-msvcrt-ubuntu-${{ env.MINGW_UBUNTU_VERSION }}-x86_64.tar.xz
+            toolchains/"mingw-${env.MINGW_GCC_VERSION}.i686.tar.gz"
+            toolchains/"mingw-${env.MINGW_GCC_VERSION}.x86_64.tar.gz"
           key: toolchains
       - name: init toolchains
         run: |
@@ -41,27 +45,37 @@ jobs:
         run: |
           echo $HOME `pwd`
           tree -L 3
-      - name: build opencv mingw-i686
+
+      - name: build and package opencv mingw-i686-gcc
         run: |
-          sh opencv/cmake-build-mingw-i686.sh
-      - name: package mingw-i686
+          sh opencv/cmake-build-mingw-i686-gcc.sh
+          cd opencv/build-mingw-i686-gcc/install/
+          zip -9 -r mingw-i686.gcc.${{ env.OPENCV_VERSION }}.zip bin include lib LICENSE setup_vars_opencv4.cmd share
+
+      - name: build and package opencv mingw-x86_64-gcc
         run: |
-          cd opencv/build-mingw-i686/install/
-          zip -9 -r mingw-i686.${{ env.OPENCV_VERSION }}.zip bin include lib LICENSE setup_vars_opencv4.cmd share
-      - name: build opencv ubuntu-x86_64
+          sh opencv/cmake-build-mingw-x86_64-gcc.sh
+          cd opencv/build-mingw-x86_64-gcc/install/
+          zip -9 -r mingw-x86_64.gcc.${{ env.OPENCV_VERSION }}.zip bin include lib LICENSE setup_vars_opencv4.cmd share
+
+      - name: build and package opencv mingw-i686-clang
+        run: |
+          sh opencv/cmake-build-mingw-i686-clang.sh
+          cd opencv/build-mingw-i686-clang/install/
+          zip -9 -r mingw-i686.clang.${{ env.OPENCV_VERSION }}.zip bin include lib LICENSE setup_vars_opencv4.cmd share
+
+      - name: build and package opencv ubuntu-x86_64
         run: |
           sh opencv/cmake-build-ubuntu-x86_64.sh
-      - name: package ubuntu-x86_64
-        run: |
           cd opencv/build-ubuntu-x86_64/install/
           tar -zcf ubuntu-x86_64.${{ env.OPENCV_VERSION }}.tar.gz bin include lib share
 
-      - name: create-release
-        uses: softprops/action-gh-release@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ needs.setup.outputs.VERSION }}
-          name: Release ${{ needs.setup.outputs.VERSION }}
-          files: |
-            opencv/build-mingw-i686/install/mingw-i686.${{ env.OPENCV_VERSION }}.zip
-            opencv/build-ubuntu-x86_64/install/ubuntu-x86_64.${{ env.OPENCV_VERSION }}.tar.gz
+      #- name: create-release
+      #  uses: softprops/action-gh-release@v1
+      #  with:
+      #    token: ${{ secrets.GITHUB_TOKEN }}
+      #    tag_name: ${{ needs.setup.outputs.VERSION }}
+      #    name: Release ${{ needs.setup.outputs.VERSION }}
+      #    files: |
+      #      opencv/build-mingw-i686/install/mingw-i686.clang.${{ env.OPENCV_VERSION }}.zip
+      #      opencv/build-ubuntu-x86_64/install/ubuntu-x86_64.${{ env.OPENCV_VERSION }}.tar.gz
