@@ -5,7 +5,7 @@ on: #[ push, pull_request ]
       - 'opencv-*'
 
 env:
-  OPENCV_VERSION: "4.9.0"
+  OPENCV_VERSION: "4.10.0"
   LLVM_CLANG_VERSION: "15.0.6"
   LLVM_UBUNTU_VERSION: "18.04"
   MINGW_CLANG_VERSION: "20231128"
